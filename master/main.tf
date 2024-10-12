@@ -22,4 +22,19 @@ resource "google_compute_instance" "default" {
         nat_ip = google_compute_address.static_ip.address
     }
   }
+
+  tags = ["k8s-master"]
+}
+
+resource "google_compute_firewall" "allow_k8s_api" {
+  name    = "allow-k8s-api"
+  network = var.network  
+
+  allow {
+    protocol = "tcp"
+    ports    = ["6443"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]  
+  target_tags = ["k8s-master"]  
 }
