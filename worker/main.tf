@@ -24,6 +24,19 @@ resource "google_compute_firewall" "allow-ingress-nodeports" {
   target_tags   = ["kube-worker"]
 }
 
+resource "google_compute_firewall" "allow-workflow-ports" {
+  name    = "allow-workflow-ports"
+  network = var.network
+
+  allow {
+    protocol = "tcp"
+    ports    = ["30007"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["kube-worker"]
+}
+
 resource "google_compute_address" "static_ip" {
   count  = var.worker_count
   name   = "my-static-ip-${count.index + 1}"
