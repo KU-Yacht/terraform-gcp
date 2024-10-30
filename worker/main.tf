@@ -52,7 +52,7 @@ resource "google_compute_instance" "default" {
   boot_disk {
     initialize_params {
       image = "${var.instance_image["ubuntu20"]}"
-      size = 10
+      size  = var.disk_size
     }
   }
 

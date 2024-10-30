@@ -47,3 +47,8 @@ variable "worker_count" {
   default ="2"
 }
 
+variable "disk_size" {
+  description = "Worker node의 디스크 크기"
+  default = 15  # 15GB로 설정
+}
+
