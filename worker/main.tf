@@ -43,6 +43,14 @@ resource "google_compute_address" "static_ip" {
   region = var.region 
 }
 
+resource "google_compute_address" "internal_static_ip" {
+  count        = var.worker_count
+  name         = "my-internal-ip-${count.index + 1}"
+  address_type = "INTERNAL"
+  region       = var.region
+  subnetwork   = "default"  
+}
+
 resource "google_compute_instance" "default" {
   count = var.worker_count
   name  = "${var.instance_name}-${count.index + 1}"
@@ -57,9 +65,11 @@ resource "google_compute_instance" "default" {
   }
 
   network_interface {
-    network = "${var.network}"
+    network    = var.network
+    subnetwork = var.network
+    network_ip = google_compute_address.internal_static_ip[count.index].address  # 고정 내부 IP
     access_config {
-        nat_ip = google_compute_address.static_ip[count.index].address
+      nat_ip = google_compute_address.static_ip[count.index].address  # 고정 외부 IP
     }
   }
 
